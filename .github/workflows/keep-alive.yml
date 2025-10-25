@@ -1,0 +1,13 @@
+name: 维持仓库活动（无文件提交）
+on:
+  schedule:
+    - cron: '0 0 26 * *'  # 每月26号 UTC 0点运行
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 输出心跳日志（维持活动）
+        run: |
+          echo "仓库心跳检测：$(date -u)"
+          echo "本次运行仅用于维持仓库活动状态，无需提交文件"
