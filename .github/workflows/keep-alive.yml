@@ -1,13 +1,30 @@
-name: 维持仓库活动（无文件提交）
+name: 维持仓库活动（自动提交心跳）
+
 on:
   schedule:
-    - cron: '0 0 26 * *'  # 每月26号 UTC 0点运行
+    - cron: '0 0 * * *'  # 每天 UTC 0点运行
+  workflow_dispatch:     # 允许手动触发
 
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 必须允许写入代码库
     steps:
-      - name: 输出心跳日志（维持活动）
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create or update keepalive file
         run: |
-          echo "仓库心跳检测：$(date -u)"
-          echo "本次运行仅用于维持仓库活动状态，无需提交文件"
+          mkdir -p .github
+          echo "Last keepalive: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" > .github/keepalive.txt
+          echo "此文件用于维持仓库活跃状态，请勿删除。" >> .github/keepalive.txt
+
+      - name: Commit and push
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          git add .github/keepalive.txt
+          git commit -m "chore(keepalive): daily heartbeat $(date -u +%Y-%m-%d)"
+          git push
