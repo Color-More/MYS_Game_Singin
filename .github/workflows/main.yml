@@ -2,7 +2,7 @@ name: MiHoYo Sign-In Script
 
 on:
   schedule:
-    - cron: '20 23 * * *' # 每天UTC 23:20, 对应北京时间7:20，实际运行时间有偏差。
+    - cron: '20 23 * * *' # 每天 UTC 23:20（即北京时间次日 07:20）运行
   workflow_dispatch: # 允许手动触发
 
 jobs:
